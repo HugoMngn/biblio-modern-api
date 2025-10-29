@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   username: string | null;
+  fullName: string | null;
   role: string | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
@@ -19,6 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState<string | null>(null);
+  const [fullName, setFullName] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
@@ -26,9 +28,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     const storedRole = localStorage.getItem('role');
+    const storedFullName = localStorage.getItem('fullName');
     if (storedUsername) {
       setUsername(storedUsername);
       setRole(storedRole);
+      setFullName(storedFullName);
     }
     setIsLoading(false);
   }, []);
@@ -36,12 +40,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (data: LoginRequest) => {
     try {
       const response = await api.login(data);
-      localStorage.setItem('username', response.username);
-      if (response.role) {
-        localStorage.setItem('role', response.role);
-        setRole(response.role);
+
+      // Get full user info including role
+      try {
+        const userInfo = await api.getUserInfo(data.username);
+        const userRole = userInfo.role || 'ROLE_MEMBER';
+        const userFullName = userInfo.fullName || data.username;
+
+        localStorage.setItem('username', response.username);
+        localStorage.setItem('role', userRole);
+        localStorage.setItem('fullName', userFullName);
+
+        setUsername(response.username);
+        setRole(userRole);
+        setFullName(userFullName);
+      } catch (error) {
+        // If getUserInfo fails, use basic info from login response
+        localStorage.setItem('username', response.username);
+        if (response.role) {
+          localStorage.setItem('role', response.role);
+          setRole(response.role);
+        }
+        setUsername(response.username);
+        setFullName(response.username);
       }
-      setUsername(response.username);
+
       toast({
         title: 'Connexion réussie',
         description: `Bienvenue ${response.username}`,
@@ -76,23 +99,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     localStorage.removeItem('username');
     localStorage.removeItem('role');
+    localStorage.removeItem('fullName');
     setUsername(null);
     setRole(null);
+    setFullName(null);
     toast({
       title: 'Déconnexion',
       description: 'À bientôt !',
     });
   };
 
+  // Helper to check roles with proper hierarchy
+  const isAdmin = role === 'ROLE_ADMIN';
+  const isLibrarian = role === 'ROLE_LIBRARIAN' || isAdmin;
+  const isMember = role === 'ROLE_MEMBER' || isLibrarian;
+
   return (
     <AuthContext.Provider
       value={{
         username,
+        fullName,
         role,
         isAuthenticated: !!username,
-        isAdmin: role === 'ROLE_ADMIN',
-        isLibrarian: role === 'ROLE_LIBRARIAN',
-        isMember: role === 'ROLE_MEMBER',
+        isAdmin,
+        isLibrarian,
+        isMember,
         login,
         register,
         logout,

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, LogOut, Search, BookMarked, Shield, User } from 'lucide-react';
+import { BookOpen, LogOut, Search, BookMarked, Shield, User, Users, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -21,45 +21,66 @@ const Navbar = () => {
           <div className="flex items-center gap-6">
             <Link
               to="/catalog"
-              className={`flex items-center gap-2 transition-smooth hover:text-accent ${
-                isActive('/catalog') ? 'text-accent font-semibold' : 'text-foreground'
-              }`}
+              className={`flex items-center gap-2 transition-smooth hover:text-accent ${isActive('/catalog') ? 'text-accent font-semibold' : 'text-foreground'
+                }`}
             >
               <Search className="h-4 w-4" />
               Catalogue
             </Link>
+
             <Link
               to="/my-loans"
-              className={`flex items-center gap-2 transition-smooth hover:text-accent ${
-                isActive('/my-loans') ? 'text-accent font-semibold' : 'text-foreground'
-              }`}
+              className={`flex items-center gap-2 transition-smooth hover:text-accent ${isActive('/my-loans') ? 'text-accent font-semibold' : 'text-foreground'
+                }`}
             >
               <BookMarked className="h-4 w-4" />
               Mes emprunts
             </Link>
+
             {(isLibrarian || isAdmin) && (
-              <Link
-                to="/librarian"
-                className={`flex items-center gap-2 transition-smooth hover:text-accent ${
-                  isActive('/librarian') ? 'text-accent font-semibold' : 'text-foreground'
-                }`}
-              >
-                <BookOpen className="h-4 w-4" />
-                Gestion
-              </Link>
+              <>
+                <Link
+                  to="/all-loans"
+                  className={`flex items-center gap-2 transition-smooth hover:text-accent ${isActive('/all-loans') ? 'text-accent font-semibold' : 'text-foreground'
+                    }`}
+                >
+                  <Clock className="h-4 w-4" />
+                  Emprunts en attente
+                </Link>
+
+                <Link
+                  to="/librarian"
+                  className={`flex items-center gap-2 transition-smooth hover:text-accent ${isActive('/librarian') ? 'text-accent font-semibold' : 'text-foreground'
+                    }`}
+                >
+                  <BookOpen className="h-4 w-4" />
+                  Gestion
+                </Link>
+              </>
             )}
+
             {isAdmin && (
-              <Link
-                to="/admin"
-                className={`flex items-center gap-2 transition-smooth hover:text-accent ${
-                  isActive('/admin') ? 'text-accent font-semibold' : 'text-foreground'
-                }`}
-              >
-                <Shield className="h-4 w-4" />
-                Admin
-              </Link>
+              <>
+                <Link
+                  to="/users"
+                  className={`flex items-center gap-2 transition-smooth hover:text-accent ${isActive('/users') ? 'text-accent font-semibold' : 'text-foreground'
+                    }`}
+                >
+                  <Users className="h-4 w-4" />
+                  Utilisateurs
+                </Link>
+
+                <Link
+                  to="/admin"
+                  className={`flex items-center gap-2 transition-smooth hover:text-accent ${isActive('/admin') ? 'text-accent font-semibold' : 'text-foreground'
+                    }`}
+                >
+                  <Shield className="h-4 w-4" />
+                  Admin
+                </Link>
+              </>
             )}
-            
+
             <div className="flex items-center gap-3 ml-4 pl-4 border-l">
               <Link to="/profile">
                 <Button variant="ghost" size="sm" className="gap-2">

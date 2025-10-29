@@ -21,12 +21,12 @@ import {
 const LibrarianDashboard = () => {
   const { isLibrarian, isAdmin, username } = useAuth();
   const { toast } = useToast();
-  
+
   const [pendingLoans, setPendingLoans] = useState<Loan[]>([]);
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
-  
+
   // Form states for new book
   const [newBook, setNewBook] = useState<Book>({
     title: '',
@@ -108,7 +108,7 @@ const LibrarianDashboard = () => {
   const handleUpdateBook = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingBook?.id) return;
-    
+
     setLoading(true);
     try {
       // TODO: Backend endpoint needed - PUT /api/books/{id}
@@ -132,7 +132,7 @@ const LibrarianDashboard = () => {
 
   const handleDeleteBook = async (bookId: number) => {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce livre ?')) return;
-    
+
     setLoading(true);
     try {
       // TODO: Backend endpoint needed - DELETE /api/books/{id}
@@ -161,50 +161,13 @@ const LibrarianDashboard = () => {
           <h1 className="text-4xl font-bold">Espace Bibliothécaire</h1>
         </div>
 
-        <Tabs defaultValue="loans" className="w-full">
+        <Tabs defaultValue="books" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="loans">
-              <ClipboardCheck className="w-4 h-4 mr-2" />
-              Emprunts en attente
-            </TabsTrigger>
             <TabsTrigger value="books">
               <BookOpen className="w-4 h-4 mr-2" />
               Gestion du catalogue
             </TabsTrigger>
           </TabsList>
-
-          <TabsContent value="loans">
-            <Card>
-              <CardHeader>
-                <CardTitle>Emprunts en attente d'approbation</CardTitle>
-                <CardDescription>
-                  Validez ou refusez les demandes d'emprunt
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {pendingLoans.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-8">
-                    Aucun emprunt en attente
-                  </p>
-                ) : (
-                  <div className="space-y-4">
-                    {pendingLoans.map((loan) => (
-                      <div key={loan.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <p className="font-semibold">Utilisateur: {loan.username}</p>
-                          <p className="text-sm text-muted-foreground">Livre ID: {loan.bookId}</p>
-                          <p className="text-sm text-muted-foreground">Statut: {loan.status}</p>
-                        </div>
-                        <Button onClick={() => loan.id && handleApproveLoan(loan.id)} disabled={loading}>
-                          Approuver
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           <TabsContent value="books">
             <div className="space-y-6">

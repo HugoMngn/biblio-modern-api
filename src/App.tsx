@@ -9,6 +9,8 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Catalog from "./pages/Catalog";
 import MyLoans from "./pages/MyLoans";
+import AllLoans from "./pages/AllLoans";
+import UserManagement from "./pages/UserManagement";
 import BookDetail from "./pages/BookDetail";
 import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -32,6 +34,7 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/catalog" element={<Catalog />} />
                 <Route path="/my-loans" element={<MyLoans />} />
+                <Route path="/all-loans" element={<AllLoans />} />
                 <Route path="/book/:id" element={<BookDetail />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/admin" element={<AdminDashboard />} />

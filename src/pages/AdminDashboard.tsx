@@ -6,13 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { UserPlus, Shield } from 'lucide-react';
-import { Navigate } from 'react-router-dom';
+import { UserPlus, Shield, Users, ArrowRight } from 'lucide-react';
+import { Navigate, Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const { isAdmin } = useAuth();
   const { toast } = useToast();
-  
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -85,6 +85,7 @@ const AdminDashboard = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    minLength={6}
                     placeholder="••••••••"
                   />
                 </div>
@@ -104,22 +105,6 @@ const AdminDashboard = () => {
                   {loading ? 'Création...' : 'Créer le bibliothécaire'}
                 </Button>
               </form>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Gestion des utilisateurs</CardTitle>
-              <CardDescription>
-                Fonctionnalité à venir : promouvoir des membres en bibliothécaires
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">
-                TODO: Ajouter un endpoint backend pour lister les utilisateurs et les promouvoir
-                <br />
-                Endpoint suggéré : GET /api/admin/users et POST /api/admin/promote
-              </p>
             </CardContent>
           </Card>
         </div>
