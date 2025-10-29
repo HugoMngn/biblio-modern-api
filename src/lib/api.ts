@@ -15,6 +15,14 @@ export interface LoginRequest {
 export interface LoginResponse {
   username: string;
   message: string;
+  role?: string; // ROLE_ADMIN, ROLE_LIBRARIAN, ROLE_MEMBER
+}
+
+export interface User {
+  id?: number;
+  username: string;
+  fullName: string;
+  role?: string;
 }
 
 export interface Book {
@@ -102,6 +110,21 @@ class LibraryAPI {
     });
   }
 
+  // TODO: Backend endpoint needed - PUT /api/books/{id}
+  async updateBook(id: number, book: Book): Promise<Book> {
+    return this.request(`/books/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(book),
+    });
+  }
+
+  // TODO: Backend endpoint needed - DELETE /api/books/{id}
+  async deleteBook(id: number): Promise<void> {
+    return this.request(`/books/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   // Loan endpoints
   async requestLoan(username: string, bookId: number): Promise<Loan> {
     return this.request('/loans/request', {
@@ -135,6 +158,33 @@ class LibraryAPI {
 
   async getMyLoans(username: string): Promise<Loan[]> {
     return this.request(`/loans/my?username=${username}`);
+  }
+
+  // TODO: Backend endpoint needed - GET /api/loans/pending
+  async getPendingLoans(): Promise<Loan[]> {
+    return this.request('/loans/pending');
+  }
+
+  // TODO: Backend endpoint needed - GET /api/loans/all
+  async getAllLoans(): Promise<Loan[]> {
+    return this.request('/loans/all');
+  }
+
+  // Profile endpoints
+  // TODO: Backend endpoint needed - PUT /api/auth/profile
+  async updateProfile(data: { fullName?: string; username?: string }): Promise<User> {
+    return this.request('/auth/profile', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  // TODO: Backend endpoint needed - PUT /api/auth/password
+  async updatePassword(oldPassword: string, newPassword: string): Promise<any> {
+    return this.request('/auth/password', {
+      method: 'PUT',
+      body: JSON.stringify({ oldPassword, newPassword }),
+    });
   }
 
   // Admin endpoints

@@ -1,10 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, LogOut, Search, BookMarked } from 'lucide-react';
+import { BookOpen, LogOut, Search, BookMarked, Shield, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
-  const { isAuthenticated, logout, username } = useAuth();
+  const { isAuthenticated, logout, username, isAdmin, isLibrarian } = useAuth();
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
@@ -37,9 +37,36 @@ const Navbar = () => {
               <BookMarked className="h-4 w-4" />
               Mes emprunts
             </Link>
+            {(isLibrarian || isAdmin) && (
+              <Link
+                to="/librarian"
+                className={`flex items-center gap-2 transition-smooth hover:text-accent ${
+                  isActive('/librarian') ? 'text-accent font-semibold' : 'text-foreground'
+                }`}
+              >
+                <BookOpen className="h-4 w-4" />
+                Gestion
+              </Link>
+            )}
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className={`flex items-center gap-2 transition-smooth hover:text-accent ${
+                  isActive('/admin') ? 'text-accent font-semibold' : 'text-foreground'
+                }`}
+              >
+                <Shield className="h-4 w-4" />
+                Admin
+              </Link>
+            )}
             
             <div className="flex items-center gap-3 ml-4 pl-4 border-l">
-              <span className="text-sm text-muted-foreground">{username}</span>
+              <Link to="/profile">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <User className="h-4 w-4" />
+                  {username}
+                </Button>
+              </Link>
               <Button onClick={logout} variant="ghost" size="sm">
                 <LogOut className="h-4 w-4" />
               </Button>
