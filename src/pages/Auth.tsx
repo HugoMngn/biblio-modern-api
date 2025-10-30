@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BookOpen } from 'lucide-react';
 
+// Authentication page with login and registration tabs
 const Auth = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get('mode') || 'login';
@@ -29,6 +30,7 @@ const Auth = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  // Handle login form submission
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -42,6 +44,7 @@ const Auth = () => {
     }
   };
 
+  // Handle registration form submission
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -56,6 +59,7 @@ const Auth = () => {
     }
   };
 
+  // Main render
   return (
     <div className="min-h-screen flex items-center justify-center p-4 gradient-hero">
       <Card className="w-full max-w-md p-8 gradient-card shadow-elegant">

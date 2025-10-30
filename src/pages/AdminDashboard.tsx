@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { UserPlus, Shield, Users, ArrowRight } from 'lucide-react';
 import { Navigate, Link } from 'react-router-dom';
 
+// AdminDashboard component for managing librarian accounts
 const AdminDashboard = () => {
   const { isAdmin } = useAuth();
   const { toast } = useToast();
@@ -22,6 +23,7 @@ const AdminDashboard = () => {
     return <Navigate to="/" replace />;
   }
 
+  // Handle the creation of a new librarian account
   const handleCreateLibrarian = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -45,6 +47,7 @@ const AdminDashboard = () => {
     }
   };
 
+  // Render the admin dashboard
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">

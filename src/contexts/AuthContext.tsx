@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { api, LoginRequest, RegisterRequest } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 
+// Define the shape of the AuthContext
 interface AuthContextType {
   username: string | null;
   fullName: string | null;
@@ -18,6 +19,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// AuthProvider component to wrap the app and provide auth state
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
@@ -37,6 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }, []);
 
+  // Login function
   const login = async (data: LoginRequest) => {
     try {
       const response = await api.login(data);
@@ -79,6 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Registration function
   const register = async (data: RegisterRequest) => {
     try {
       await api.register(data);
@@ -96,6 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Logout function
   const logout = () => {
     localStorage.removeItem('username');
     localStorage.removeItem('role');
@@ -114,6 +119,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isLibrarian = role === 'ROLE_LIBRARIAN' || isAdmin;
   const isMember = role === 'ROLE_MEMBER' || isLibrarian;
 
+  // Provide the auth context values
   return (
     <AuthContext.Provider
       value={{
@@ -135,6 +141,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// Custom hook to use the AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

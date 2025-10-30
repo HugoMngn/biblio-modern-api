@@ -18,7 +18,7 @@ import LibrarianDashboard from "./pages/LibrarianDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
-
+// Main application component
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -35,6 +35,7 @@ const App = () => (
                 <Route path="/catalog" element={<Catalog />} />
                 <Route path="/my-loans" element={<MyLoans />} />
                 <Route path="/all-loans" element={<AllLoans />} />
+                <Route path="/users" element={<UserManagement />} />
                 <Route path="/book/:id" element={<BookDetail />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/admin" element={<AdminDashboard />} />

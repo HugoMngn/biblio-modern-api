@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BookOpen, ArrowLeft, Loader2 } from 'lucide-react';
 
+// Book detail page with borrow functionality
 const BookDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const BookDetail = () => {
     }
   }, [id, isAuthenticated, navigate]);
 
+  // Load book details by ID
   const loadBook = async (bookId: number) => {
     setIsLoading(true);
     try {
@@ -44,6 +46,7 @@ const BookDetail = () => {
     }
   };
 
+  // Handle borrow book action
   const handleBorrow = async () => {
     if (!username || !book?.id) return;
 
@@ -66,6 +69,7 @@ const BookDetail = () => {
     }
   };
 
+  // Loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -76,6 +80,7 @@ const BookDetail = () => {
 
   if (!book) return null;
 
+  // Main render
   return (
     <div className="min-h-screen py-8 px-4">
       <div className="container mx-auto max-w-4xl">
@@ -98,7 +103,7 @@ const BookDetail = () => {
 
             <div className="flex-1">
               <h1 className="text-4xl font-bold mb-4">{book.title}</h1>
-              
+
               <div className="flex items-center gap-3 mb-6 flex-wrap">
                 <Badge variant={book.available ? 'default' : 'secondary'} className="text-sm">
                   {book.available ? 'Disponible' : 'Emprunté'}

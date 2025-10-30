@@ -1,73 +1,248 @@
-# Welcome to your Lovable project
+# BiblioModerne - Application de Gestion de Bibliothèque
 
-## Project info
+## 🎯 Présentation
 
-**URL**: https://lovable.dev/projects/05415d06-c01a-4fe0-ab22-188395e9d2da
+BiblioModerne est une application web moderne de gestion de bibliothèque construite avec React, TypeScript et Vite. Elle offre une interface utilisateur élégante et réactive pour gérer les livres, les emprunts et les utilisateurs d'une bibliothèque.
 
-## How can I edit this code?
+## 🏗️ Architecture
 
-There are several ways of editing your application.
+### Structure du Projet
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/05415d06-c01a-4fe0-ab22-188395e9d2da) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+src/
+├── components/     # Composants réutilisables
+├── contexts/      # Contextes React (Auth)
+├── hooks/         # Hooks personnalisés
+├── lib/          # Services et utilitaires
+└── pages/        # Pages/Routes de l'application
 ```
 
-**Edit a file directly in GitHub**
+### Technologies Principales
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- **Frontend**: React + TypeScript
+- **Build Tool**: Vite
+- **UI Components**: Shadcn UI
+- **State Management**: React Context
+- **Routing**: React Router
+- **API Client**: Custom API service
+- **Styling**: Tailwind CSS
 
-**Use GitHub Codespaces**
+## 🔑 Fonctionnalités Clés
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Système d'Authentification
 
-## What technologies are used for this project?
+Le système d'authentification est géré par le `AuthContext` qui fournit :
+- Gestion des sessions utilisateur
+- Hiérarchie des rôles (Admin > Librarian > Member)
+- Persistance des données de session
+- Gestion des tokens et sécurité
 
-This project is built with:
+### Gestion des Rôles
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+3 niveaux d'accès sont implémentés :
 
-## How can I deploy this project?
+1. **Administrateur** (`ROLE_ADMIN`)
+   - Création de comptes bibliothécaires
+   - Gestion complète des utilisateurs
+   - Accès à toutes les fonctionnalités
 
-Simply open [Lovable](https://lovable.dev/projects/05415d06-c01a-4fe0-ab22-188395e9d2da) and click on Share -> Publish.
+2. **Bibliothécaire** (`ROLE_LIBRARIAN`)
+   - Gestion du catalogue de livres
+   - Approbation des emprunts
+   - Suivi des retours
 
-## Can I connect a custom domain to my Lovable project?
+3. **Membre** (`ROLE_MEMBER`)
+   - Consultation du catalogue
+   - Demande d'emprunts
+   - Gestion de son profil
 
-Yes, you can!
+### API Service (`api.ts`)
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Le service API est une classe qui centralise toutes les interactions avec le backend :
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```typescript
+class LibraryAPI {
+  // Auth
+  register(data: RegisterRequest): Promise<User>
+  login(data: LoginRequest): Promise<LoginResponse>
+  changePassword(data: ChangePasswordRequest): Promise<string>
+  
+  // Books
+  searchBooks(params: SearchParams): Promise<Book[]>
+  getBookById(id: number): Promise<Book>
+  addBook(book: Book): Promise<Book>
+  
+  // Loans
+  requestLoan(username: string, bookId: number): Promise<Loan>
+  approveLoan(loanId: number, approver: string): Promise<Loan>
+  returnBook(loanId: number, username: string): Promise<Loan>
+}
+```
+
+### Gestion des Emprunts
+
+Le système de prêt comprend plusieurs états :
+- **En attente** : Demande initiale
+- **Approuvé** : Validé par un bibliothécaire
+- **En cours** : Livre emprunté
+- **Retourné** : Emprunt terminé
+- **En retard** : Dépassement de la date de retour
+
+## 📱 Interfaces Principales
+
+### Composants UI
+
+1. **BookCard**
+   - Affichage des informations d'un livre
+   - Actions contextuelles selon le rôle
+   - État de disponibilité
+
+2. **Navbar**
+   - Navigation adaptative
+   - Menu dynamique selon le rôle
+   - État de connexion
+
+### Pages
+
+1. **Catalog** (`/catalog`)
+   - Liste des livres disponibles
+   - Filtres de recherche
+   - Actions d'emprunt
+
+2. **MyLoans** (`/my-loans`)
+   - Suivi des emprunts personnels
+   - États et dates
+   - Actions de retour
+
+3. **AdminDashboard** (`/admin`)
+   - Gestion des utilisateurs
+   - Création de bibliothécaires
+   - Statistiques
+
+4. **LibrarianDashboard** (`/librarian`)
+   - Gestion du catalogue
+   - Validation des emprunts
+   - Suivi des retours
+
+## 💫 Fonctionnalités Avancées
+
+### Gestion des États
+
+- Utilisation de React Query pour la gestion du cache
+- Contextes pour l'état global
+- États locaux pour les formulaires
+
+### Validation et Sécurité
+
+- Validation des formulaires
+- Gestion des erreurs API
+- Protection des routes
+- Vérification des rôles
+
+### UI/UX
+
+- Design responsive
+- Thème sombre/clair
+- Feedback utilisateur (toasts)
+- Loading states
+- Gestion des erreurs
+
+## 🛠️ Configuration
+
+Le projet utilise plusieurs fichiers de configuration :
+
+- `vite.config.ts` : Configuration de Vite
+- `tsconfig.json` : Configuration TypeScript
+- `tailwind.config.ts` : Configuration Tailwind CSS
+- `.env` : Variables d'environnement
+
+## 🔧 Installation
+
+1. Cloner le repository
+2. Installer les dépendances :
+   ```bash
+   npm install
+   ```
+3. Configurer les variables d'environnement :
+   ```env
+   VITE_API_BASE_URL=http://localhost:8080/api
+   ```
+4. Lancer le serveur de développement :
+   ```bash
+   npm run dev
+   ```
+
+## 🌟 Bonnes Pratiques Implémentées
+
+1. **Architecture Modulaire**
+   - Séparation claire des responsabilités
+   - Composants réutilisables
+   - Services isolés
+
+2. **Gestion des Types**
+   - TypeScript strict
+   - Interfaces pour les modèles
+   - Types pour les props
+
+3. **Sécurité**
+   - Validation des entrées
+   - Protection des routes
+   - Gestion des tokens
+
+4. **Performance**
+   - Lazy loading des routes
+   - Optimisation des requêtes
+   - Mise en cache appropriée
+
+5. **Maintenabilité**
+   - Code commenté
+   - Structure claire
+   - Nommage explicite
+
+## 📚 Documentation des Modèles
+
+### User
+```typescript
+interface User {
+  id?: number;
+  username: string;
+  fullName: string;
+  role?: string;
+}
+```
+
+### Book
+```typescript
+interface Book {
+  id?: number;
+  title: string;
+  author: string;
+  genre: string;
+  isbn?: string;
+  available?: boolean;
+}
+```
+
+### Loan
+```typescript
+interface Loan {
+  id?: number;
+  bookId: number;
+  username: string;
+  loanDate?: string;
+  dueDate?: string;
+  returnDate?: string;
+  status?: string;
+  approved?: boolean;
+}
+```
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! Voici quelques domaines d'amélioration possibles :
+
+1. Tests unitaires et d'intégration
+2. Internationalisation
+3. Mode hors ligne
+4. PWA
+5. Nouvelles fonctionnalités

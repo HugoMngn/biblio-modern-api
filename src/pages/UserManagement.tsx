@@ -25,8 +25,10 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+// User Management page for admin users
 const UserManagement = () => {
     const { toast } = useToast();
+    const { isAdmin } = useAuth();
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; user: User | null }>({
@@ -34,19 +36,26 @@ const UserManagement = () => {
         user: null,
     });
 
+    if (!isAdmin) {
+        return <Navigate to="/" replace />;
+    }
+
     useEffect(() => {
         loadUsers();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // Function to load all users
     const loadUsers = async () => {
         try {
             setLoading(true);
             const data = await api.getAllUsers();
             setUsers(data);
         } catch (error: unknown) {
+            console.error("Error loading users:", error);
             toast({
                 title: "Erreur",
-                description: (error as Error).message || "Impossible de charger les utilisateurs",
+                description: (error as { message?: string }).message || "Impossible de charger les utilisateurs",
                 variant: "destructive",
             });
         } finally {
@@ -54,6 +63,7 @@ const UserManagement = () => {
         }
     };
 
+    // Function to promote a user to a new role
     const handlePromote = async (username: string, newRole: string) => {
         try {
             await api.promoteUser(username, newRole);
@@ -65,12 +75,13 @@ const UserManagement = () => {
         } catch (error: unknown) {
             toast({
                 title: "Erreur",
-                description: (error as Error).message,
+                description: (error as { message?: string }).message || "Impossible de promouvoir l'utilisateur",
                 variant: "destructive",
             });
         }
     };
 
+    // Function to delete a user
     const handleDelete = async () => {
         if (!deleteDialog.user) return;
 
@@ -85,12 +96,13 @@ const UserManagement = () => {
         } catch (error: unknown) {
             toast({
                 title: "Erreur",
-                description: (error as Error).message,
+                description: (error as { message?: string }).message || "Impossible de supprimer l'utilisateur",
                 variant: "destructive",
             });
         }
     };
 
+    // Function to get role badge
     const getRoleBadge = (role?: string) => {
         switch (role) {
             case "ROLE_ADMIN":
@@ -121,6 +133,7 @@ const UserManagement = () => {
         return <div className="container mx-auto p-8">Chargement...</div>;
     }
 
+    // Main render
     return (
         <div className="container mx-auto p-8">
             <Card>

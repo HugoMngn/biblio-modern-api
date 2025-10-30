@@ -42,6 +42,10 @@ export interface Loan {
   dueDate?: string;
   returnDate?: string;
   status?: string;
+  approved?: boolean;
+  bookTitle?: string;
+  bookAuthor?: string;
+  bookGenre?: string;
 }
 
 export interface ChangePasswordRequest {
@@ -55,6 +59,7 @@ export interface ProfileUpdateRequest {
   fullName: string;
 }
 
+// Library API class
 class LibraryAPI {
   private async request<T>(
     endpoint: string,
@@ -91,6 +96,7 @@ class LibraryAPI {
     });
   }
 
+  // Login endpoint
   async login(data: LoginRequest): Promise<LoginResponse> {
     return this.request('/auth/login', {
       method: 'POST',
@@ -98,7 +104,7 @@ class LibraryAPI {
     });
   }
 
-  // NEW: Change password endpoint (mapped to backend)
+  // Change password endpoint (mapped to backend)
   async changePassword(data: ChangePasswordRequest): Promise<string> {
     return this.request('/auth/change-password', {
       method: 'POST',
@@ -106,12 +112,12 @@ class LibraryAPI {
     });
   }
 
-  // NEW: Get user info
+  // Get user info
   async getUserInfo(username: string): Promise<User> {
     return this.request(`/auth/user/${username}`);
   }
 
-  // NEW: Update profile (mapped to backend)
+  // Update profile (mapped to backend)
   async updateProfile(data: ProfileUpdateRequest): Promise<string> {
     return this.request('/auth/user/update', {
       method: 'PUT',
@@ -119,7 +125,7 @@ class LibraryAPI {
     });
   }
 
-  // NEW: Create admin (for super admin operations)
+  // Create admin (for super admin operations)
   async createAdmin(data: RegisterRequest): Promise<User> {
     return this.request('/auth/admin/create', {
       method: 'POST',
@@ -141,10 +147,12 @@ class LibraryAPI {
     return this.request(`/books/search?${query.toString()}`);
   }
 
+  // Get book by ID
   async getBookById(id: number): Promise<Book> {
     return this.request(`/books/${id}`);
   }
 
+  // Admin book management
   async addBook(book: Book): Promise<Book> {
     return this.request('/books', {
       method: 'POST',
@@ -152,6 +160,7 @@ class LibraryAPI {
     });
   }
 
+  // Update book details
   async updateBook(id: number, book: Book): Promise<Book> {
     return this.request(`/books/${id}`, {
       method: 'PUT',
@@ -159,6 +168,7 @@ class LibraryAPI {
     });
   }
 
+  // Delete book by ID
   async deleteBook(id: number): Promise<string> {
     return this.request(`/books/${id}`, {
       method: 'DELETE',
@@ -176,6 +186,7 @@ class LibraryAPI {
     });
   }
 
+  // Approve loan (librarian action)
   async approveLoan(loanId: number, approver: string): Promise<Loan> {
     return this.request('/loans/approve', {
       method: 'POST',
@@ -186,6 +197,7 @@ class LibraryAPI {
     });
   }
 
+  // Return book
   async returnBook(loanId: number, username: string): Promise<Loan> {
     return this.request('/loans/return', {
       method: 'POST',
@@ -196,6 +208,7 @@ class LibraryAPI {
     });
   }
 
+  // Get user's loans
   async getMyLoans(username: string): Promise<Loan[]> {
     return this.request(`/loans/my?username=${username}`);
   }
@@ -225,20 +238,20 @@ class LibraryAPI {
     });
   }
 
+  // Get all users
   async getAllUsers(): Promise<User[]> {
     return this.request('/admin/users');
   }
 
-  async promoteUser(username: string, newRole: string): Promise<User> {
+  // Promote user to new role
+  async promoteUser(username: string, newRole: string): Promise<any> {
     return this.request('/admin/promote', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({ username, newRole }),
+      body: JSON.stringify({ username, newRole }),
     });
   }
 
+  // Delete user
   async deleteUser(username: string): Promise<string> {
     return this.request(`/admin/users/${username}`, {
       method: 'DELETE',

@@ -10,6 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 
+// Catalog page with search and borrow functionality
 const Catalog = () => {
   const { isAuthenticated, username } = useAuth();
   const { toast } = useToast();
@@ -28,6 +29,7 @@ const Catalog = () => {
     loadBooks();
   }, [isAuthenticated, navigate]);
 
+  // Load books with optional search parameters
   const loadBooks = async (params = {}) => {
     setIsLoading(true);
     try {
@@ -44,6 +46,7 @@ const Catalog = () => {
     }
   };
 
+  // Handle search form submission
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) {
@@ -56,6 +59,7 @@ const Catalog = () => {
     loadBooks(params);
   };
 
+  // Handle borrow book action
   const handleBorrow = async (bookId: number) => {
     if (!username) return;
 
@@ -78,6 +82,7 @@ const Catalog = () => {
     }
   };
 
+  // Main render
   return (
     <div className="min-h-screen py-8 px-4">
       <div className="container mx-auto max-w-6xl">
@@ -94,13 +99,12 @@ const Catalog = () => {
                   <Input
                     id="search"
                     type="text"
-                    placeholder={`Rechercher par ${
-                      searchType === 'title'
+                    placeholder={`Rechercher par ${searchType === 'title'
                         ? 'titre'
                         : searchType === 'author'
-                        ? 'auteur'
-                        : 'genre'
-                    }...`}
+                          ? 'auteur'
+                          : 'genre'
+                      }...`}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"

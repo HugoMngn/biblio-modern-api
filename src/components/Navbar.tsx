@@ -3,12 +3,14 @@ import { BookOpen, LogOut, Search, BookMarked, Shield, User, Users, Clock } from
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
+// Navbar component
 const Navbar = () => {
   const { isAuthenticated, logout, username, isAdmin, isLibrarian } = useAuth();
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
 
+  // JSX for Navbar
   return (
     <nav className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50 shadow-elegant">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -17,6 +19,7 @@ const Navbar = () => {
           <span className="font-bold text-xl">BiblioModerne</span>
         </Link>
 
+        {/* Links for authenticated users */}
         {isAuthenticated && (
           <div className="flex items-center gap-6">
             <Link
@@ -37,6 +40,7 @@ const Navbar = () => {
               Mes emprunts
             </Link>
 
+            {/* Admin and Librarian specific links */}
             {(isLibrarian || isAdmin) && (
               <>
                 <Link
@@ -59,6 +63,7 @@ const Navbar = () => {
               </>
             )}
 
+            {/* Admin specific links */}
             {isAdmin && (
               <>
                 <Link
@@ -81,6 +86,7 @@ const Navbar = () => {
               </>
             )}
 
+            {/* User profile and logout */}
             <div className="flex items-center gap-3 ml-4 pl-4 border-l">
               <Link to="/profile">
                 <Button variant="ghost" size="sm" className="gap-2">
@@ -95,6 +101,7 @@ const Navbar = () => {
           </div>
         )}
 
+        {/* Links for unauthenticated users */}
         {!isAuthenticated && (
           <div className="flex items-center gap-3">
             <Link to="/auth">

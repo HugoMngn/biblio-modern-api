@@ -3,9 +3,11 @@ import { Button } from '@/components/ui/button';
 import { BookOpen, Search, Clock, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
+// Home page with hero and features sections
 const Home = () => {
   const { isAuthenticated } = useAuth();
 
+  // Main render
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -49,7 +51,7 @@ const Home = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
             Une expérience de lecture enrichie
           </h2>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center p-6 rounded-lg gradient-card shadow-elegant hover:shadow-hover transition-smooth">
               <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">

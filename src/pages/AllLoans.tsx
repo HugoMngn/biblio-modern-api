@@ -1,24 +1,29 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { api, Loan, Book } from "@/lib/api";
+import { api, Loan } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, Clock, Book as BookIcon, User as UserIcon, Calendar } from "lucide-react";
 
-interface LoanWithBook extends Loan {
-    book?: Book;
+// Extended Loan interface to handle both formats
+interface ExtendedLoan extends Loan {
+    bookTitle?: string;
+    bookAuthor?: string;
+    bookGenre?: string;
 }
 
+// Component to display all pending loans for librarian approval
 const AllLoans = () => {
     const { username } = useAuth();
     const { toast } = useToast();
-    const [loans, setLoans] = useState<LoanWithBook[]>([]);
+    const [loans, setLoans] = useState<ExtendedLoan[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         loadLoans();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const loadLoans = async () => {
@@ -26,27 +31,13 @@ const AllLoans = () => {
             setLoading(true);
             if (!username) return;
 
-            // Get pending loans
+            // Get pending loans with embedded book data
             const data = await api.getPendingLoans();
-
-            // Fetch book details for each loan
-            const loansWithBooks = await Promise.all(
-                data.map(async (loan) => {
-                    try {
-                        const book = await api.getBookById(loan.bookId);
-                        return { ...loan, book };
-                    } catch (error) {
-                        console.error(`Failed to fetch book ${loan.bookId}:`, error);
-                        return loan;
-                    }
-                })
-            );
-
-            setLoans(loansWithBooks);
+            setLoans(data);
         } catch (error: unknown) {
             toast({
                 title: "Erreur",
-                description: (error as Error).message || "Impossible de charger les emprunts",
+                description: (error as { message?: string }).message || "Impossible de charger les emprunts",
                 variant: "destructive",
             });
         } finally {
@@ -54,6 +45,7 @@ const AllLoans = () => {
         }
     };
 
+    // Approve loan
     const handleApprove = async (loanId: number) => {
         if (!username) return;
 
@@ -67,12 +59,13 @@ const AllLoans = () => {
         } catch (error: unknown) {
             toast({
                 title: "Erreur",
-                description: (error as Error).message,
+                description: (error as { message?: string }).message,
                 variant: "destructive",
             });
         }
     };
 
+    // Get status badge based on loan status
     const getStatusBadge = (status?: string) => {
         switch (status?.toLowerCase()) {
             case "pending":
@@ -106,6 +99,7 @@ const AllLoans = () => {
         }
     };
 
+    // Format date to DD/MM/YYYY
     const formatDate = (dateString?: string) => {
         if (!dateString) return "N/A";
         try {
@@ -119,6 +113,7 @@ const AllLoans = () => {
         }
     };
 
+    // Loading state
     if (loading) {
         return (
             <div className="container mx-auto p-8">
@@ -129,6 +124,7 @@ const AllLoans = () => {
         );
     }
 
+    // Main render
     return (
         <div className="container mx-auto p-8">
             <Card>
@@ -158,16 +154,16 @@ const AllLoans = () => {
                                                     <BookIcon className="w-5 h-5 text-primary mt-1" />
                                                     <div className="flex-1">
                                                         <p className="font-semibold text-lg">
-                                                            {loan.book?.title || `Livre #${loan.bookId}`}
+                                                            {loan.bookTitle || `Livre #${loan.bookId}`}
                                                         </p>
-                                                        {loan.book?.author && (
+                                                        {loan.bookAuthor && (
                                                             <p className="text-sm text-muted-foreground">
-                                                                Par {loan.book.author}
+                                                                Par {loan.bookAuthor}
                                                             </p>
                                                         )}
-                                                        {loan.book?.genre && (
+                                                        {loan.bookGenre && (
                                                             <Badge variant="secondary" className="mt-1">
-                                                                {loan.book.genre}
+                                                                {loan.bookGenre}
                                                             </Badge>
                                                         )}
                                                     </div>

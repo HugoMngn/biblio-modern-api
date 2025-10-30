@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { User, Lock, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+// Profile page with user information and password change functionality
 const Profile = () => {
   const { username, fullName: currentFullName, role, logout } = useAuth();
   const { toast } = useToast();
@@ -33,6 +34,7 @@ const Profile = () => {
     }
   }, [currentFullName]);
 
+  // Handle profile update form submission
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -47,6 +49,7 @@ const Profile = () => {
       return;
     }
 
+    // Update profile API call
     setLoading(true);
     try {
       await api.updateProfile({
@@ -77,6 +80,7 @@ const Profile = () => {
     }
   };
 
+  // Handle password update form submission
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -91,6 +95,7 @@ const Profile = () => {
       return;
     }
 
+    // Validate password length
     if (newPassword.length < 6) {
       toast({
         title: 'Erreur',
@@ -100,6 +105,7 @@ const Profile = () => {
       return;
     }
 
+    // Change password API call
     setLoading(true);
     try {
       await api.changePassword({
@@ -133,6 +139,7 @@ const Profile = () => {
     }
   };
 
+  // Get role badge component
   const getRoleBadge = (roleValue: string | null) => {
     switch (roleValue) {
       case 'ROLE_ADMIN':
@@ -153,10 +160,12 @@ const Profile = () => {
     }
   };
 
+  // Main render
   if (!username) {
     return null;
   }
 
+  // Render profile page
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
