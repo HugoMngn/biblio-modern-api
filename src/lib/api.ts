@@ -247,7 +247,10 @@ class LibraryAPI {
   async promoteUser(username: string, newRole: string): Promise<any> {
     return this.request('/admin/promote', {
       method: 'POST',
-      body: JSON.stringify({ username, newRole }),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({ username, newRole }),
     });
   }
 
