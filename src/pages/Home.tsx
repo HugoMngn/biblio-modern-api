@@ -14,7 +14,7 @@ const Home = () => {
       <section className="gradient-hero text-primary-foreground py-24 px-4">
         <div className="container mx-auto text-center max-w-4xl">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 text-balance">
-            Votre bibliothèque moderne
+            Votre bibliothèque ModernaTo
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-primary-foreground/90 text-balance">
             Découvrez, empruntez et gérez vos lectures en toute simplicité
